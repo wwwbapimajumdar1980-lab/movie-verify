@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cineflix Verification Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
+
+        .icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #38bdf8;
+        }
+
+        p {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .timer-box {
+            background: #0f172a;
+            border: 2px dashed #38bdf8;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .timer {
+            font-size: 28px;
+            font-weight: bold;
+            color: #f43f5e;
+        }
+
+        .btn {
+            background-color: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:disabled {
+            background-color: #475569;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .btn-active {
+            background-color: #10b981;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="icon">🎬</div>
+        <h2>Verification Required</h2>
+        <p>সিনেমাটি বটের কাছে ফেরত নেওয়ার জন্য অনুগ্রহ করে ৫ সেকেন্ড অপেক্ষা করুন এবং নীচের সবুজ বাটনে ক্লিক করুন।</p>
+
+        <div class="timer-box">
+            <span id="status-text" style="font-size: 14px; color: #cbd5e1;">অপেক্ষা করুন...</span>
+            <div class="timer" id="countdown">5</div>
+        </div>
+
+        <button id="action-btn" class="btn" disabled>Wait 5 Seconds...</button>
+
+        <div class="footer-text">
+            Powered by Cineflix Bot Network
+        </div>
+    </div>
+
+    <script>
+        // ==================== কনফিগারেশন বসানো হয়েছে ====================
+        
+        // ১. আপনার দেওয়া Monetag Direct Link:
+        const MONETAG_DIRECT_LINK = "https://api.gplinks.com/st?api=61b6868075976f926d6ad36958b4d6b1b0c413ee&url=https://t.me/ScamProofXBot"; 
+        
+        // ২. আপনার বটের ইউজারনেম:
+        const BOT_USERNAME = "ScamProofXBot"; 
+
+        // =================================================================
+
+        // URL parameters থেকে ফাইল টোকেন বের করা
+        const urlParams = new URLSearchParams(window.location.search);
+        const fileToken = urlParams.get('file') || '';
+
+        let timeLeft = 5;
+        const countdownEl = document.getElementById('countdown');
+        const actionBtn = document.getElementById('action-btn');
+        const statusText = document.getElementById('status-text');
+
+        const timer = setInterval(() => {
+            timeLeft--;
+            countdownEl.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                countdownEl.style.display = 'none';
+                statusText.textContent = "আপনার ফাইলটি প্রস্তুত!";
+                statusText.style.color = "#10b981";
+
+                actionBtn.disabled = false;
+                actionBtn.textContent = "Continue to Bot";
+                actionBtn.classList.add('btn-active');
+            }
+        }, 1000);
+
+        // বাটনে ক্লিক করার প্রসেস
+        actionBtn.addEventListener('click', () => {
+            // ১. Monetag Ad / Shortlink নতুন ট্যাবে ওপেন হবে
+            window.open(MONETAG_DIRECT_LINK, '_blank');
+
+            // ২. মূল পেজটি টেলিগ্রাম বটের নির্দিষ্ট ফাইল ডিপ-লিংকে রিডাইরেক্ট হয়ে চলে যাবে
+            const botRedirectUrl = fileToken 
+                ? `https://t.me/${BOT_USERNAME}?start=${fileToken}` 
+                : `https://t.me/${BOT_USERNAME}`;
+                
+            window.location.href = botRedirectUrl;
+        });
+    </script>
+</body>
+</html>
